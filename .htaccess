@@ -1,0 +1,31 @@
+DirectoryIndex login.php index.php index.html
+
+# Nunca servir o arquivo de credenciais
+<Files ".env">
+  <IfModule mod_authz_core.c>
+    Require all denied
+  </IfModule>
+  <IfModule !mod_authz_core.c>
+    Order allow,deny
+    Deny from all
+  </IfModule>
+</Files>
+
+# Força HTTPS (o subdomínio já deve ter certificado gratuito da hospedagem).
+# Remova este bloco se o subdomínio ainda não tiver SSL ativo.
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteCond %{HTTPS} off
+  RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+</IfModule>
+
+# Documentacao e arquivos internos nao sao servidos pela web
+<FilesMatch "\.(md|txt|sql|log|py|sh)$">
+  <IfModule mod_authz_core.c>
+    Require all denied
+  </IfModule>
+  <IfModule !mod_authz_core.c>
+    Order allow,deny
+    Deny from all
+  </IfModule>
+</FilesMatch>
